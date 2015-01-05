@@ -9,5 +9,5 @@ Running
 =======
 
 - Change the parameters in mmsclient.properties
-- Run with "mvn exec:java" for one execution or  "mvn exec:java -Drepeat=20" to loop 
+- Run with "mvn exec:java" for one execution or  "mvn exec:java -Drepeat=5" to increase load (i.e more threads are consumed)  
 
