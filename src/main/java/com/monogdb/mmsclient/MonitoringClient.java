@@ -10,7 +10,8 @@ public abstract class MonitoringClient {
 	private String mmsGroupId = null;
 	private String mmsServerAddress = null;
 	private String mmsServerPort = null;
-	private int threadCount = -1; 
+	private int threadCount = -1;
+	private int retryCount = -1;
 	
 	private ExecutorService executorService = null;
 	private MMSAPIWrapper apiWrapper = null;
@@ -29,9 +30,11 @@ public abstract class MonitoringClient {
 			mmsServerAddress = mmsClientProps.getProperty("mmsServerAddress", "127.0.0.1");
 			mmsServerPort = mmsClientProps.getProperty("mmsServerPort", "8080");
 			threadCount = Integer.parseInt(mmsClientProps.getProperty("threadCount", "15"));
+			retryCount = Integer.parseInt(mmsClientProps.getProperty("retryCount", "3"));
 			
 			executorService = java.util.concurrent.Executors.newFixedThreadPool(threadCount);
 			apiWrapper = new MMSAPIWrapper(mmsUsername, mmsApiKey, mmsServerAddress, mmsServerPort);
+			apiWrapper.setMaxRetryCount(retryCount);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
