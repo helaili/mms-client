@@ -1,5 +1,7 @@
 package com.monogdb.mmsclient;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
@@ -27,11 +29,21 @@ public class HostMetricListRetrievalTask implements Callable<Integer> {
 		
 		JsonArray metricListResult = metrics.getJsonArray("results");
 		
+		List<Future<JsonObject>> list = new ArrayList<Future<JsonObject>>();
+		 
 		for(int metricCounter = 0; metricCounter < metricListResult.size(); metricCounter++) {
-			@SuppressWarnings("unused")
 			Future<JsonObject> future = mc.getExecutorService().submit(new HostMetricRetrievalTask(mc, host, metricListResult.getJsonObject(metricCounter).getString("metricName")));
-			callCount++;
+			list.add(future);
 		}
+		
+		try {
+			for(Future<JsonObject> future : list) {
+				future.get();
+				callCount ++;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 		
 		return callCount;
 	}
