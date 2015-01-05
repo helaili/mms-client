@@ -1,6 +1,7 @@
 package com.monogdb.mmsclient;
 
-import java.util.ResourceBundle;
+import java.io.FileInputStream;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
 public abstract class MonitoringClient {
@@ -16,16 +17,25 @@ public abstract class MonitoringClient {
 	
 	public MonitoringClient() {
 		super();
-		ResourceBundle bundle = ResourceBundle.getBundle("mmsclient");
-		mmsUsername = bundle.getString("mmsUsername");
-		mmsApiKey = bundle.getString("mmsApiKey");
-		mmsGroupId = bundle.getString("mmsGroupId");
-		mmsServerAddress = bundle.getString("mmsServerAddress");
-		mmsServerPort = bundle.getString("mmsServerPort");
-		threadCount = Integer.parseInt(bundle.getString("threadCount"));
-		
-		executorService = java.util.concurrent.Executors.newFixedThreadPool(threadCount);
-		apiWrapper = new MMSAPIWrapper(mmsUsername, mmsApiKey, mmsServerAddress, mmsServerPort);
+		try {
+			Properties mmsClientProps = new Properties();
+			FileInputStream in = new FileInputStream("mmsclient.properties");
+			mmsClientProps.load(in);
+			
+			
+			mmsUsername = mmsClientProps.getProperty("mmsUsername");
+			mmsApiKey = mmsClientProps.getProperty("mmsApiKey");
+			mmsGroupId = mmsClientProps.getProperty("mmsGroupId");
+			mmsServerAddress = mmsClientProps.getProperty("mmsServerAddress", "127.0.0.1");
+			mmsServerPort = mmsClientProps.getProperty("mmsServerPort", "8080");
+			threadCount = Integer.parseInt(mmsClientProps.getProperty("threadCount", "15"));
+			
+			executorService = java.util.concurrent.Executors.newFixedThreadPool(threadCount);
+			apiWrapper = new MMSAPIWrapper(mmsUsername, mmsApiKey, mmsServerAddress, mmsServerPort);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		} 
 	}
 	
 	
