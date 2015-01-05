@@ -16,7 +16,6 @@ public class BasicMonitoringClient extends MonitoringClient implements Callable<
 	
 	
 	public static void main(String[] args) {
-		BasicMonitoringClient client = new BasicMonitoringClient();
 		Long before = Calendar.getInstance().getTimeInMillis();
 		int repeat = 1;
 		
@@ -63,7 +62,6 @@ public class BasicMonitoringClient extends MonitoringClient implements Callable<
 	
 	@Override
 	public Integer call() throws Exception {
-		System.out.println("Starting monitoring thread");
 		JsonObject hostList = getApiWrapper().getHostList(getMmsGroupId());
 		int callCounter = 1; //1 because we just did one call to get the host list
 		
