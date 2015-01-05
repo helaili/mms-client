@@ -17,10 +17,14 @@ public class BasicMonitoringClient extends MonitoringClient {
 	public static void main(String[] args) {
 		BasicMonitoringClient client = new BasicMonitoringClient();
 		Long before = Calendar.getInstance().getTimeInMillis();
-	
-		int returnCode = client.runManyParallel(20);
-		//int returnCode = client.runMany(10);
-
+		int repeat = 1;
+		
+		if(args[0] != null) {
+			repeat = Integer.parseInt(args[0]);
+		}
+		
+		int returnCode = client.runManyParallel(repeat);
+		
 		Long after = Calendar.getInstance().getTimeInMillis();
 		Long duration = after-before;
 		System.out.println("Completed " + callCounter + " API calls in " + duration + " ms, so it's " + (duration/callCounter) + " ms per call");
