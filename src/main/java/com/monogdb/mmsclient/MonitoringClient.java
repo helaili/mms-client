@@ -1,19 +1,32 @@
 package com.monogdb.mmsclient;
 
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 
 public abstract class MonitoringClient {
-	private String mmsUsername = "alain.helaili@mongodb.com";
-	private String mmsApiKey = "4543da68-4369-40fa-8e7f-67ebc74f7534";
-	private String mmsGroupId = "54a119826ba2c33b30d75066";
-	private String mmsServerAddress = "127.0.0.1";
-	private String mmsServerPort = "8180";
-	private int threadCount = 15; 
+	private String mmsUsername = null;
+	private String mmsApiKey = null;
+	private String mmsGroupId = null;
+	private String mmsServerAddress = null;
+	private String mmsServerPort = null;
+	private int threadCount = -1; 
 	
-	private ExecutorService executorService = java.util.concurrent.Executors.newFixedThreadPool(threadCount);
-	//private ExecutorService executorService = java.util.concurrent.Executors.newCachedThreadPool();
-	 
-	private MMSAPIWrapper apiWrapper = new MMSAPIWrapper(mmsUsername, mmsApiKey, mmsServerAddress, mmsServerPort);
+	private ExecutorService executorService = null;
+	private MMSAPIWrapper apiWrapper = null;
+	
+	public MonitoringClient() {
+		super();
+		ResourceBundle bundle = ResourceBundle.getBundle("mmsclient");
+		mmsUsername = bundle.getString("mmsUsername");
+		mmsApiKey = bundle.getString("mmsApiKey");
+		mmsGroupId = bundle.getString("mmsGroupId");
+		mmsServerAddress = bundle.getString("mmsServerAddress");
+		mmsServerPort = bundle.getString("mmsServerPort");
+		threadCount = Integer.parseInt(bundle.getString("threadCount"));
+		
+		executorService = java.util.concurrent.Executors.newFixedThreadPool(threadCount);
+		apiWrapper = new MMSAPIWrapper(mmsUsername, mmsApiKey, mmsServerAddress, mmsServerPort);
+	}
 	
 	
 	public String getMmsUsername() {
